@@ -40,8 +40,18 @@ file_b.scan(/^\s*(\w+)[ \t]*=[ \t]*(.*)$/) do |a, b|
   hB[a.strip] = b.strip.split(" ")
 end
 
+
+puts "Legend:".light_blue <<
+  "\n[*] Not exist in #{$options[:a]}".red <<
+  "\n[*] Not exist in #{$options[:b]}".green <<
+  "\n[*] Modified #{$options[:a]} -> #{$options[:b]}" <<
+  "\n[+] New sections in #{$options[:b]}".yellow <<
+  "\n[-] Missing sections in #{$options[:b]}".red
 hA.each do |k, v|
-  puts "[-]".red << " #{k}\t#{v}" && next unless hB.has_key?(k)
+  unless hB.has_key?(k)
+    puts "[-]".red << " #{k}\t#{v}"
+    next
+  end
   if hA[k].count == 1 && hB[k].count == 1
     puts "[*]".green << " #{k}\t#{v[0]} -> #{hB[k][0]}" if hA[k][0] != hB[k][0]
     next
@@ -58,3 +68,5 @@ end
 hB.each do |k, v|
   puts "[+]".yellow << " #{k}\t#{v}" unless hA.has_key?(k)
 end
+
+puts "Done!".light_blue
